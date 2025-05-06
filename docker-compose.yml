@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: feedback-db
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - feedback-network
+
+  web:
+    container_name: feedback-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@feedback-db:5432/${POSTGRES_DB}
+      - DJANGO_SECRET_KEY=${SECRET_KEY}
+      - DJANGO_DEBUG=${DEBUG}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DOMAIN=${DOMAIN}
+    depends_on:
+      - db
+    networks:
+      - feedback-network
+
+networks:
+  feedback-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,17 @@
+
+*.pyc
+
+#ignore virtual enviroment
+venv/
+
+# ignore docker
+*.log
+*.posqtres
+.docker/
+
+# ignore configuration files
+.idea/
+.vscode/
+
+# ignore dotenv
+.env
