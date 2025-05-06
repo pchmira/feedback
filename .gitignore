@@ -6,7 +6,6 @@ venv/
 
 # ignore docker
 *.log
-*.posqtres
 .docker/
 
 # ignore configuration files
@@ -15,3 +14,5 @@ venv/
 
 # ignore dotenv
 .env
+
+media/
